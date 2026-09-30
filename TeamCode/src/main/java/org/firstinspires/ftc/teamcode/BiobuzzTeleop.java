@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="6437 BioBuzz TeleOp", group="Linear OpMode")
@@ -20,7 +21,13 @@ public class BiobuzzTeleop extends LinearOpMode {
     private DcMotorEx sMotor = null;
     private DcMotorEx iMotor = null;
 
+    private Servo bservo1 = null;
+
+    private Servo bservo2 = null;
+
     private boolean ShooterOn = false;
+
+    private boolean Brake = false;
 
 
     @Override
@@ -29,6 +36,8 @@ public class BiobuzzTeleop extends LinearOpMode {
         fRMotor = hardwareMap.get(DcMotorEx.class, "rightFront");
         bLMotor = hardwareMap.get(DcMotorEx.class, "leftBack");
         bRMotor = hardwareMap.get(DcMotorEx.class, "rightBack");
+        bservo1 = hardwareMap.get(Servo.class, "BServo1");
+        bservo2 = hardwareMap.get(Servo.class, "BServo2");
 
         fLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         bLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -61,8 +70,9 @@ public class BiobuzzTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             //basic movement code
             double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
+                double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
+            double ShooterVelocity = sMotor.getVelocity();
 
          /* if ((y == 0) && (x == 0) && (rx == 0)); {
                 fLMotor.
@@ -71,8 +81,8 @@ public class BiobuzzTeleop extends LinearOpMode {
                 bRMotor.setPower(bRPower);
             }  scrapped brake code ^
           */
-
-
+            telemetry.addLine();
+            telemetry.addData(("Shooter Speed:"), (ShooterVelocity));
             double fLPower = (y + x + rx);
             double bLPower = (y - x + rx);
             double fRPower = (y - x - rx);
@@ -101,21 +111,30 @@ public class BiobuzzTeleop extends LinearOpMode {
 
           */
 
-            if (gamepad1.a) {
+            if (gamepad1.b) {
                 ShooterOn = !ShooterOn;
+                sleep(500);
+            }
+            if (gamepad1.right_bumper) {
+                Brake = !Brake;
+                sleep(500);
             }
 
 
 
             if (ShooterOn) {
-                sMotor.setPower(5.5);
+                sMotor.setPower(10);
             } else {
                 sMotor.setPower(0);
             }
+            if (Brake) {
+                bservo1.setPosition(0.29);
+                bservo2.setPosition(0.29);
 
-
-
-
+            } else {
+                bservo1.setPosition(0);
+                bservo2.setPosition(0);
+            }
 
             telemetry.update();
             telemetry.clear();
