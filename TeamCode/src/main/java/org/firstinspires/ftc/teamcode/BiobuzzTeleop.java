@@ -57,10 +57,8 @@ public class BiobuzzTeleop extends LinearOpMode {
         sMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
 
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
 
 
         // Wait for the game to start (driver presses START)
@@ -70,7 +68,7 @@ public class BiobuzzTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             //basic movement code
             double y = -gamepad1.left_stick_y;
-                double x = gamepad1.left_stick_x;
+            double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
             double ShooterVelocity = sMotor.getVelocity();
 
@@ -88,52 +86,50 @@ public class BiobuzzTeleop extends LinearOpMode {
             double fRPower = (y - x - rx);
             double bRPower = (y + x - rx);
 
-            fLMotor.setPower(fLPower);
-            fRMotor.setPower(fRPower);
-            bLMotor.setPower(bLPower);
-            bRMotor.setPower(bRPower);
+            if(!Brake) {
+                fLMotor.setPower(fLPower);
+                fRMotor.setPower(fRPower);
+                bLMotor.setPower(bLPower);
+                bRMotor.setPower(bRPower);
+            }
 
             //Shooter Code
-            /*
-            if(gamepad1.right_bumper){
-                iMotor.setVelocity(103);
-                if(gamepad1.right_trigger == 1){
-                    sMotor.setVelocity(28);
-                    telemetry.addLine("Firing!");
-                }
-                else{
-                    telemetry.addLine("Ready to Fire!");
-                }
-            }
-            else{
-                iMotor.setVelocity(0);
+
+            if (gamepad1.b) {
+
+            } else {
+
             }
 
-          */
 
             if (gamepad1.b) {
                 ShooterOn = !ShooterOn;
-                sleep(500);
+                sleep(250);
             }
             if (gamepad1.right_bumper) {
                 Brake = !Brake;
-                sleep(500);
+                sleep(250);
             }
-
 
 
             if (ShooterOn) {
-                sMotor.setPower(10);
+                iMotor.setVelocity(28);
+                sMotor.setVelocity(5200);
             } else {
-                sMotor.setPower(0);
+                iMotor.setVelocity(0);
+                sMotor.setVelocity(0);
             }
-            if (Brake) {
-                bservo1.setPosition(0.29);
-                bservo2.setPosition(0.29);
+
+            //Brake code
+            if (Brake && gamepad1.left_stick_x == 0 && gamepad1.left_stick_y == 0 && gamepad2.left_stick_x == 0 && gamepad2.left_stick_y == 0) {
+                sleep(250);
+                bservo1.setPosition(0.21);
+                bservo2.setPosition(0.21);
 
             } else {
                 bservo1.setPosition(0);
                 bservo2.setPosition(0);
+                Brake = false;
             }
 
             telemetry.update();
