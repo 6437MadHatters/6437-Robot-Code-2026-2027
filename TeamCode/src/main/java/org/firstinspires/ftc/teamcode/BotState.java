@@ -28,7 +28,7 @@ public class BotState {
     boolean readyToShoot = false; // check if the flywheel is up to speed
 
     // STATES
-    enum botState {
+    public enum botState {
         idle,
         shoot,
         intake,

@@ -36,19 +36,23 @@ public class Methods {
     ColorSensor colorSensor;
     DistanceSensor rangeSensor;
     double sensedDist = 0;
+
     enum alliance {
         blue,
         red,
         unknown
     }
+
     alliance currentAlliance = alliance.blue;
     int allianceID = 0;
+
     enum ballColor {
         green,
         purple,
         unknown,
         empty
     }
+
     int patternID = 0;
     ballColor[] currentPattern = {ballColor.unknown, ballColor.unknown, ballColor.unknown};
     ballColor currentColor = ballColor.empty;
@@ -134,33 +138,32 @@ public class Methods {
             } else {
                 config.liftMotor.setPower(liftHoldPower); // passed the middle, sink down to mechanical hard stop
             }
-        }
-        else {
+        } else {
             config.liftMotor.setPower(0);
         }
     } // CANNOT BE UNDONE: WHEN DPAD_DOWN IS PRESSED IN TELEOP THE BOT WILL LIFT AND STAY UP
 
     // INTAKE CONTROL
     // set intake power
-    public void intakePower(double motorPower){
+    public void intakePower(double motorPower) {
         config.intakeMotor.setPower(motorPower);
     }
 
     // PATTERN IDENTIFICATION
     // read the april tag ID for randomization
-    public void readTagIDs(Telemetry telemetry, boolean isThisABackAuto){
+    public void readTagIDs(Telemetry telemetry, boolean isThisABackAuto) {
         LLResult result = config.limelight.getLatestResult();
-        if (result != null && result.isValid()){
-                for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
-                    int id = (int) tag.getFiducialId();
-                    if (id == 21 || id == 22 || id == 23) {
-                        patternID = id;
-                    } else if (id == 20 || id == 24) {
-                        allianceID = id;
-                    }
+        if (result != null && result.isValid()) {
+            for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
+                int id = (int) tag.getFiducialId();
+                if (id == 21 || id == 22 || id == 23) {
+                    patternID = id;
+                } else if (id == 20 || id == 24) {
+                    allianceID = id;
                 }
-                telemetry.addData("Detected Alliance", currentAlliance.toString() + " | " + allianceID);
-                telemetry.addData("Detected Pattern", Arrays.toString(currentPattern) + " | " + patternID);
+            }
+            telemetry.addData("Detected Alliance", currentAlliance.toString() + " | " + allianceID);
+            telemetry.addData("Detected Pattern", Arrays.toString(currentPattern) + " | " + patternID);
         } else {
             telemetry.addData("Limelight", "No targets seen");
         }
@@ -169,7 +172,7 @@ public class Methods {
     }
 
     // get april tag id's and set current alliance
-    public void updateAlliance(int tagID, boolean isThisABackAuto){
+    public void updateAlliance(int tagID, boolean isThisABackAuto) {
         if (tagID == 24) {
             if (!isThisABackAuto) {
                 currentAlliance = alliance.blue;
@@ -185,12 +188,12 @@ public class Methods {
         }
     }
 
-    public alliance getCurrentAlliance(){
+    public alliance getCurrentAlliance() {
         return currentAlliance;
     }
 
     // get april tag id and set the current pattern
-    public void updatePattern(int tagID){
+    public void updatePattern(int tagID) {
         if (tagID == 21) {
             currentPattern = new ballColor[]{ballColor.green, ballColor.purple, ballColor.purple};
         } else if (tagID == 22) {
@@ -203,7 +206,7 @@ public class Methods {
     }
 
     // determine if a shooter has a ball and what color it is (call it every single loop somewhere)
-    public ballColor getBallColor(ColorSensor colorSensor, DistanceSensor rangeSensor){
+    public ballColor getBallColor(ColorSensor colorSensor, DistanceSensor rangeSensor) {
         // set up distance and color variables
         sensedDist = rangeSensor.getDistance(DistanceUnit.CM);
         int r = colorSensor.red();
@@ -235,7 +238,7 @@ public class Methods {
     }
 
     // test color
-    public float getHue(ColorSensor colorTestSensor){
+    public float getHue(ColorSensor colorTestSensor) {
         int r = colorTestSensor.red();
         int g = colorTestSensor.green();
         int b = colorTestSensor.blue();
@@ -249,13 +252,13 @@ public class Methods {
 
     // check if ANY shooter matches the pattern
     public boolean anyShooterMatches() {
-        return currentPattern[0] == getBallColor(config.colorLeft, config.rangeLeft) || currentPattern[0] == getBallColor(config.colorMid, config.rangeMid)  || currentPattern[0] == getBallColor(config.colorRight, config.rangeRight);
+        return currentPattern[0] == getBallColor(config.colorLeft, config.rangeLeft) || currentPattern[0] == getBallColor(config.colorMid, config.rangeMid) || currentPattern[0] == getBallColor(config.colorRight, config.rangeRight);
     }
 
     // return true to shoot if the specific shooter should shoot
-    public boolean shouldShoot(ColorSensor colorSensor, DistanceSensor rangeSensor){
+    public boolean shouldShoot(ColorSensor colorSensor, DistanceSensor rangeSensor) {
 
-        if (getBallColor(colorSensor, rangeSensor) == currentPattern[0]){
+        if (getBallColor(colorSensor, rangeSensor) == currentPattern[0]) {
             return true; // if the ball matches the pattern, shoot
         } else if ((currentPattern[0] == ballColor.unknown) && (getBallColor(colorSensor, rangeSensor) != ballColor.empty)) {
             return true; // if no april tag is recognized just shoot one
@@ -278,8 +281,8 @@ public class Methods {
     // SHOOTER CONTROL
     // sync shooter motors
     public void shooterPower(double motorPower) {
-        config.shooterLeft.setPower(motorPower);
-        config.shooterRight.setPower(motorPower);
+        config.leftShooter.setPower(motorPower);
+        config.rightShooter.setPower(motorPower);
     }
 
     // PID control to set a target motor RPM (returns true if shooter is up to speed)
@@ -294,8 +297,8 @@ public class Methods {
             timeDifference = 0.001; // prevent division by 0
         }
         // rpm = motor ticks per second * 60 seconds / 28 encoder ticks per revolution
-        double leftRPM = config.shooterLeft.getVelocity() * 60 / 28;
-        double rightRPM = config.shooterRight.getVelocity() * 60 / 28;
+        double leftRPM = config.leftShooter.getVelocity() * 60 / 28;
+        double rightRPM = config.rightShooter.getVelocity() * 60 / 28;
         double currentRPM = (leftRPM + rightRPM) / 2;
 
         double error = targetRPM - currentRPM;
@@ -352,8 +355,8 @@ public class Methods {
 
     // getter for shooter rpm
     public double getShooterSpeed() {
-        double leftRPM = config.shooterLeft.getVelocity() * 60 / 28;
-        double rightRPM = config.shooterRight.getVelocity() * 60 / 28;
+        double leftRPM = config.leftShooter.getVelocity() * 60 / 28;
+        double rightRPM = config.rightShooter.getVelocity() * 60 / 28;
         return (leftRPM + rightRPM) / 2;
     }
 
@@ -361,19 +364,19 @@ public class Methods {
     // convert angle to servo position (clamp to 75 max and 45 min)
     public double angleToPos(double angle) {
         double clampedAngle;
-            if (angle >= 75){
-                clampedAngle = 75;
-            } else if (angle <= 45) {
-                clampedAngle = 45;
-            } else {
-                clampedAngle = angle;
-            }
+        if (angle >= 75) {
+            clampedAngle = 75;
+        } else if (angle <= 45) {
+            clampedAngle = 45;
+        } else {
+            clampedAngle = angle;
+        }
         double pos = (0.00000071943 * Math.pow(clampedAngle, 4)) - (0.000129484 * Math.pow(clampedAngle, 3)) + (0.00775377 * Math.pow(clampedAngle, 2)) - (0.146158 * clampedAngle) - 0.264893; // magic numbers. don't ask just trust
         return Math.max(0, Math.min(pos, .7));
     }
-
+}
     // Update angle every loop in the runner THIS CALLS angleToPos!!! just send a raw angle to this method
-    public void updateAngle(double targetAngle) {
+    /*public void updateAngle(double targetAngle) {
         // set both to same speed
         config.angleLeft.setPosition(angleToPos(targetAngle)); // update angle servos
         config.angleRight.setPosition(angleToPos(targetAngle));
@@ -381,7 +384,7 @@ public class Methods {
 
     // AUTO FIRE ALIGNMENT
     // find values for what the limelight sees
-    public void getLLDistances(Telemetry telemetry){
+    public void getLLDistances(Telemetry telemetry) {
         config.limelight.pipelineSwitch(2); // pipeline 2 for fire alignment: only April tags !!! and !!!
         LLResult result = config.limelight.getLatestResult();
         if (result != null && result.isValid()) {
@@ -401,7 +404,7 @@ public class Methods {
     }
 
     // get best rpm based on april tag size
-    public int alignRPM(boolean shootingThree, Telemetry telemetry){
+    public int alignRPM(boolean shootingThree, Telemetry telemetry) {
         config.limelight.pipelineSwitch(2); // pipeline 2 for fire alignment: only April tags 20 and 24
         LLResult result = config.limelight.getLatestResult();
         if (result != null && result.isValid()) {
@@ -418,7 +421,7 @@ public class Methods {
     }
 
     // replace the left stick input with a P controller to keep the april tag centered
-    public double autoLeftStickAlign(double manualInput, Telemetry telemetry){
+    public double autoLeftStickAlign(double manualInput, Telemetry telemetry) {
         config.limelight.pipelineSwitch(2); // pipeline 2 for fire alignment: only April tags 20 and 24
         LLResult result = config.limelight.getLatestResult();
         if (result != null && result.isValid()) {
@@ -426,7 +429,7 @@ public class Methods {
             finalTargetX = targetX + (-0.001 * Math.pow(currentXAngle, 3) + (.32 * currentXAngle)); // adjust the target based on the angle. trust the magic.
             double errorX = currentX - finalTargetX;
             double adjustmentX; // add a fraction of the error every loop until there is no error. super simple. super smart.
-            if (Math.abs(errorX) < 5){
+            if (Math.abs(errorX) < 5) {
                 adjustmentX = Px * errorX * 2; // add more power when we get close to the target
             } else {
                 adjustmentX = Px * errorX;
@@ -442,7 +445,7 @@ public class Methods {
     }
 
     // align the shooter angle with the april tag - THIS IS A BASIC P CONTROLLER - only proportional
-    public double alignShooterAngle(double angle, boolean shootingThree, Telemetry telemetry){
+    public double alignShooterAngle(double angle, boolean shootingThree, Telemetry telemetry) {
         config.limelight.pipelineSwitch(2); // pipeline 2 for fire alignment: only April tags 20 and 24
         LLResult result = config.limelight.getLatestResult();
         if (result != null && result.isValid()) {
@@ -498,7 +501,7 @@ public class Methods {
     }
 
     // method to "scoop" - use state machine for drop servos and same logic as drop servos :)
-    public void angleScoop (boolean triggered) {
+    public void angleScoop(boolean triggered) {
         if (triggered && !scoopStarted) { //leftState != launchState.dropping) {
             updateAngle(scoopAngle);
             scoopState = servoState.going;
@@ -506,7 +509,7 @@ public class Methods {
             scoopStarted = true;
         }
     }
-
+}
     // Update launcher servo states AND the scoop state in the runner
     public void updateServoState() {
 
@@ -603,4 +606,3 @@ public class Methods {
     public boolean isScoopMoving(){
         return scoopMoving;
     }
-}

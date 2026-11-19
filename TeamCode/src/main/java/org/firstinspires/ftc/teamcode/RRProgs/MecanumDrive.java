@@ -63,28 +63,28 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         // drive model parameters
-        public double inPerTick = 0.001973739169;
-        public double lateralInPerTick = 0.0014098186257677622;
-        public double trackWidthTicks =  6805.181198086039;
+        public double inPerTick = 0.001958919545;
+        public double lateralInPerTick = -0.00000104263586896622;
+        public double trackWidthTicks =  4736.940985177373;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.9031119331770334;
-        public double kV = 0.0004004339792829408;
-        public double kA = 0.00005;
+        public double kS = 2.5281388390737183;
+        public double kV = 0.00013632160876487113;
+        public double kA = 0.000045;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 75;
-        public double minProfileAccel = -45;
-        public double maxProfileAccel = 85;
+        public double maxWheelVel = 50;
+        public double minProfileAccel = -30;
+        public double maxProfileAccel = 50;
 
         // turn profile parameters (in radians)
         public double maxAngVel = 2*Math.PI; // shared with path
         public double maxAngAccel = 2*Math.PI;
 
         // path controller gains
-        public double axialGain = 7;
+        public double axialGain = 14;
         public double lateralGain = 8;
-        public double headingGain = 6; // shared with turn
+        public double headingGain = 3; // shared with turn
 
         public double axialVelGain = 0;
         public double lateralVelGain = 0;
@@ -236,10 +236,10 @@ public final class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // reverse motor directions if needed
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -454,14 +454,14 @@ public final class MecanumDrive {
     public PoseVelocity2d updatePoseEstimate() {
         PoseVelocity2d vel = localizer.update();
         poseHistory.add(localizer.getPose());
-        
+
         while (poseHistory.size() > 100) {
             poseHistory.removeFirst();
         }
 
         estimatedPoseWriter.write(new PoseMessage(localizer.getPose()));
-        
-        
+
+
         return vel;
     }
 

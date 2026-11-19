@@ -12,19 +12,19 @@ import com.qualcomm.robotcore.hardware.Servo.Direction;
 
 public class Configuration {
     //this class makes sense so you can have one set config. This is super useful if you want to change the direction of a motor or something.
-    DcMotorEx frontRight;
-    DcMotorEx backRight;
-    DcMotorEx frontLeft;
-    DcMotorEx backLeft;
-    DcMotorEx shooterLeft;
-    DcMotorEx shooterRight;
+    public DcMotorEx frontRight;
+    public DcMotorEx backRight;
+    public DcMotorEx frontLeft;
+    public DcMotorEx backLeft;
+    DcMotorEx leftShooter;
+    DcMotorEx rightShooter;
     DcMotorEx intakeMotor;
-    DcMotorEx liftMotor;
-    Servo releaseLeft;
-    Servo releaseMiddle;
-    Servo releaseRight;
-    Servo angleLeft;
-    Servo angleRight;
+    DcMotorEx transferMotor;
+    Servo tServoNectar;
+    Servo tServoPollen;
+    Servo bServoLeft;
+    Servo bServoRight;
+    Servo shootServo;
     ColorSensor colorLeft;
     DistanceSensor rangeLeft;
     ColorSensor colorMid;
@@ -39,15 +39,15 @@ public class Configuration {
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
-        shooterLeft = hardwareMap.get(DcMotorEx.class, "shooterLeft");
-        shooterRight = hardwareMap.get(DcMotorEx.class, "shooterRight");
+        leftShooter = hardwareMap.get(DcMotorEx.class, "leftShooter");
+        rightShooter = hardwareMap.get(DcMotorEx.class, "rightShooter");
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
-        liftMotor = hardwareMap.get(DcMotorEx.class, "lift");
-        releaseLeft = hardwareMap.get(Servo.class, "releaseLeft");
-        releaseMiddle = hardwareMap.get(Servo.class, "releaseMiddle");
-        releaseRight = hardwareMap.get(Servo.class, "releaseRight");
-        angleLeft = hardwareMap.get(Servo.class, "angleLeft");
-        angleRight = hardwareMap.get(Servo.class, "angleRight");
+        transferMotor = hardwareMap.get(DcMotorEx.class, "transferMotor");
+        tServoNectar = hardwareMap.get(Servo.class, "tServoNectar");
+        tServoPollen = hardwareMap.get(Servo.class, "tServoPollen");
+        bServoLeft = hardwareMap.get(Servo.class, "bServoLeft");
+        bServoRight = hardwareMap.get(Servo.class, "bServoRight");
+        shootServo = hardwareMap.get(Servo.class, "shootServo"); //we good on hardware
         colorLeft = hardwareMap.get(ColorSensor.class, "colorLeft");
         rangeLeft = hardwareMap.get(DistanceSensor.class, "colorLeft");
         colorMid = hardwareMap.get(ColorSensor.class, "colorMiddle");
@@ -62,15 +62,15 @@ public class Configuration {
         backRight.setDirection(DcMotorEx.Direction.FORWARD);
         frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
         backLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        shooterLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        shooterRight.setDirection(DcMotorEx.Direction.FORWARD);
+        leftShooter.setDirection(DcMotorEx.Direction.REVERSE);
+        rightShooter.setDirection(DcMotorEx.Direction.FORWARD);
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        releaseLeft.setDirection(Direction.REVERSE);
-        releaseMiddle.setDirection(Direction.REVERSE);
-        releaseRight.setDirection(Direction.FORWARD);
-        angleLeft.setDirection(Direction.FORWARD);
-        angleRight.setDirection(Direction.REVERSE);
+        transferMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        tServoNectar.setDirection(Direction.REVERSE);
+        bServoLeft.setDirection(Direction.REVERSE);
+        bServoRight.setDirection(Direction.FORWARD);
+        tServoPollen.setDirection(Direction.FORWARD);
+        shootServo.setDirection(Direction.REVERSE);
 
         //Brake or float, you should usually use brake. This means that the motor will not go limp, but instead try to resist movement.
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -79,7 +79,7 @@ public class Configuration {
         backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //shooterLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE); // shooter doesn't need to brake
         //shooterRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE); // shooter doesn't need to brake
-        intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        //intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         //liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // it's countersprung
     }
 }
