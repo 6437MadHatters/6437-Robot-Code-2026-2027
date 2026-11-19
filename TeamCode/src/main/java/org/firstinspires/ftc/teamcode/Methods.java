@@ -129,9 +129,9 @@ public class Methods {
     public void pidErrorReset() {
         integral = 0;
     } // reset the total errors for all the PID's when the system closes. CALL THIS EVERY TIME YOU EXIT THE SHOOT CLASS
-
+}
     // LIFT CONTROL
-    public void updateLift(boolean goUp) {
+   /* public void updateLift(boolean goUp) {
         if (goUp) {
             if (config.liftMotor.getCurrentPosition() < topTicks) {
                 config.liftMotor.setPower(liftUpPower); // power until the arm is past physically perpendicular with floor
@@ -605,4 +605,4 @@ public class Methods {
     }
     public boolean isScoopMoving(){
         return scoopMoving;
-    }
+    }*/
