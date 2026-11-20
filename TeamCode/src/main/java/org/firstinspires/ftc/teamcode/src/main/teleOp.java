@@ -123,7 +123,7 @@ public class teleOp extends LinearOpMode {
         Button gamepad2_left_stick_button = new Button(gamepad2.left_stick_button);
         Button gamepad2_Right_bumper = new Button(gamepad2.right_bumper);
         Button gamepad2_Left_bumper = new Button(gamepad2.left_bumper);
-
+//random change
         // initialize the gyro (we only use it for driving)
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
