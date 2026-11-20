@@ -10,15 +10,21 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class BotState {
 
     // config and methods variable!!
-    static Configuration config;
-    static Methods method;
-    static Telemetry telemetry;
+    Configuration config;
+    Methods method;
+    Telemetry telemetry;
 
+    public botState getCurrentState() {
+        return currentState;
+    }
+
+    //You might need to re-add the word "static" before each of these variables, because it could change the calling of it
     //constructor for the method. Whenever an object is created, it needs to be passed the configuration object of the class that creates its object. This allows this class to use the objects of the motors/servos and make changes.
     public BotState(Configuration config, Methods method, Telemetry telemetry) {
-        BotState.config = config;
-        BotState.method = method;
-        BotState.telemetry = telemetry;
+        this.config = config;
+        this.method = method;
+        this.telemetry = telemetry;
+        this.currentState = botState.idle;
     }
 
     // VARIABLES
@@ -55,7 +61,7 @@ public class BotState {
         currentState = state;
     }
 
-    // update states every iteration of the loop IN THE RUNNER
+    /*// update states every iteration of the loop IN THE RUNNER
     public void updateBotState(boolean allA, boolean rightB, boolean leftX, boolean middleY, boolean scoop, int rpm, double angle) {
 
         if (currentState == botState.idle) {
@@ -111,16 +117,13 @@ public class BotState {
         //telemetry.addData("scoop state", method.getScoopState());
         telemetry.addData("Detected colors (left, mid, right)", method.getBallColor(config.colorLeft, config.rangeLeft) + ", " + method.getBallColor(config.colorMid, config.rangeMid) + ", " + method.getBallColor(config.colorRight, config.rangeRight));
         // telemetry.addData("dist", method.getSensedDist()); // distance test
-        // telemetry.addData("hue", method.getHue()); // hue test
+        // telemetry.addData("hue", method.getHue()); // hue test*/
     }
 
     // bot state getter
-    public botState getBotState() {
-        return currentState;
-    }
 
     // RR ACTION TO CHANGE STATE INSTANTANEOUSLY (until a drop completes (or doesn't even start))
-    public Action setBotAction (botState state, boolean usePattern, boolean allOrflick, boolean scoop, int rpm, int angle) {
+    /*public Action setBotAction (botState state, boolean usePattern, boolean allOrflick, boolean scoop, int rpm, int angle) {
         return new Action() {
             boolean moveStarted = false; // boolean to check if servo fsm has started
             boolean latched = false; // latch shots if using pattern
@@ -222,3 +225,5 @@ public class BotState {
         };
     }
 }
+
+     */

@@ -50,15 +50,10 @@ public class teleOp extends LinearOpMode {
 
     //Now Declare the members that are based on each challenge
     private DcMotorEx intakeMotor = null;
-
     private Servo bservo1 = null;
-
     private Servo bservo2 = null;
-
     private boolean Brake = false;
-
     private boolean isSlowMode = false;
-
     private boolean wasDpadUpPressed = false;
     //Transfer servos
     private Servo pollenTServo = null;
